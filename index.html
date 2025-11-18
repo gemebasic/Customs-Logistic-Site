@@ -1,50 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Abuzer Custom Clearance & Logistic PLC</title>
+
+    <!-- SEO / Social -->
+    <meta
+      name="description"
+      content="Customs clearing, logistics, agricultural irrigation technologies and spare parts supplier in Ethiopia."
+    />
+    <meta
+      name="keywords"
+      content="customs, logistics, irrigation, water pumps, agriculture, Ethiopia"
+    />
+
+    <!-- Preconnect & FontAwesome -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link rel="stylesheet" href="style.css" />
+    <link rel="preload" href="style.css" as="style" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity=""
+      crossorigin="anonymous"
+    />
+
+    <!-- Preload hero background images to avoid late paint -->
+    <link rel="preload" as="image" href="assets/customs.png" />
+    <link rel="preload" as="image" href="assets/hero-background-2.jpeg" />
+    <link rel="preload" as="image" href="assets/hero-background-4.jpeg" />
+
+    <!-- Favicon (add your favicon.ico to project root) -->
+    <link rel="icon" href="favicon.ico" />
   </head>
 
   <body>
     <!-- HEADER -->
     <header>
-      <div class="logo">Abuzer Customs & Logistic PLC</div>
+      <div class="logo">Abuzer Customs Clearance & Logistic PLC</div>
 
       <nav>
         <a href="#home">Home</a>
-
         <a href="#services">Services</a>
         <a href="#products">Products</a>
         <a href="#about">About Us</a>
         <a href="#contact" class="contact-btn">Contact</a>
       </nav>
 
-      <button class="menu-toggle">☰</button>
+      <button class="menu-toggle" aria-label="Toggle menu">☰</button>
     </header>
 
     <!-- HERO SECTION -->
     <section id="home" class="hero-section">
       <div class="hero-slider">
-        <div class="slide">
+        <div class="slide" data-bg="assets/customs.png">
           <div class="hero-content">
             <h1>Your Gateway to Global Trade.</h1>
             <p>We simplify customs clearance and logistics operations.</p>
           </div>
         </div>
 
-        <div class="slide">
+        <div class="slide" data-bg="assets/hero-background-2.jpeg">
           <div class="hero-content">
             <h1>Boosting Productivity with Modern Agriculture.</h1>
             <p>Supporting agribusiness supply chains with efficiency.</p>
           </div>
         </div>
 
-        <div class="slide">
+        <div class="slide" data-bg="assets/hero-background-4.jpeg">
           <div class="hero-content">
             <h1>Strategic Growth and Investment.</h1>
             <p>Your trusted partner in business consulting.</p>
+          </div>
+        </div>
+        <div class="slide slide-no-crop" data-bg="assets/hero-construction.png">
+          <div class="hero-content">
+            <h1>Reliable Supply of Premium Construction Materials</h1>
+            <p>
+              Delivering quality inputs for infrastructure growth and industrial
+              development.
+            </p>
           </div>
         </div>
       </div>
@@ -192,7 +228,7 @@
         <!-- Harvest Machines -->
         <div class="product-card">
           <div class="product-img">
-            <img src="assets/harvest.jpeg" alt="Harvest Machinery" />
+            <img src="assets/construction1.jpeg" alt="Harvest Machinery" />
           </div>
           <h3>Harvest Machinery</h3>
           <ul>
@@ -335,31 +371,73 @@
             <strong>Phone:</strong><br />
             <a href="tel:+251938151252">+251 93 815 1252</a>
           </p>
+          <p>
+            <strong>Email:</strong><br />
+            <a href="mailto:gemuderiba@gmail.com">gemuderiba@gmail.com</a>
+          </p>
+
+          <!-- SOCIAL MEDIA -->
+          <div class="social-links">
+            <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-telegram"></i></a>
+            <a href="#" target="_blank"><i class="fa-solid fa-x"></i></a>
+          </div>
         </div>
 
         <!-- Contact Form -->
-        <form id="contact-form" class="contact-box">
+        <form
+          action="https://formsubmit.co/gemuderiba@gmail.com"
+          method="POST"
+          class="contact-box"
+        >
+          <!-- Disable CAPTCHA -->
+          <input type="hidden" name="_captcha" value="false" />
+
+          <!-- Email subject -->
+          <input
+            type="hidden"
+            name="_subject"
+            value="New Contact Form Message"
+          />
+
+          <!-- After submit, redirect here (optional) -->
+          <input
+            type="hidden"
+            name="_next"
+            value="http://127.0.0.1:5500/thank-you.html"
+          />
+
           <div class="form-group">
             <label>Full Name</label>
-            <input type="text" placeholder="Enter your name" required />
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter your name"
+              required
+            />
           </div>
 
           <div class="form-group">
             <label>Email Address</label>
-            <input type="email" placeholder="Enter your email" required />
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              required
+            />
           </div>
 
           <div class="form-group">
             <label>Your Message</label>
-            <textarea placeholder="Write your message" required></textarea>
+            <textarea
+              name="message"
+              placeholder="Write your message"
+              required
+            ></textarea>
           </div>
 
           <button class="primary-btn">Send Message</button>
-          <p
-            id="form-message"
-            class="success-message"
-            style="display: none"
-          ></p>
         </form>
       </div>
     </section>

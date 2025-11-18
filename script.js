@@ -1,88 +1,108 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Mobile Navigation Toggle
+  /* ====================
+     Mobile nav toggle
+     ==================== */
   const menuToggle = document.querySelector(".menu-toggle");
   const navMenu = document.querySelector("nav");
-
   if (menuToggle && navMenu) {
-    menuToggle.addEventListener("click", () => {
-      navMenu.classList.toggle("active");
-    });
-    // 3. SLIDER CONTROL (NEW JAVASCRIPT LOGIC)
-    const slider = document.querySelector(".hero-slider");
-    const slides = document.querySelectorAll(".slide");
+    menuToggle.addEventListener("click", () =>
+      navMenu.classList.toggle("active")
+    );
+    // close on link click (mobile)
+    navMenu
+      .querySelectorAll("a")
+      .forEach((a) =>
+        a.addEventListener("click", () => navMenu.classList.remove("active"))
+      );
+  }
 
-    if (slider && slides.length > 0) {
-      let currentSlide = 0;
-      const totalSlides = slides.length;
-      const slideWidthPercentage = 100 / totalSlides; // 100 / 3 = 33.333...%
-      const slideDuration = 3000; // 5 seconds per slide (includes hold and transition)
-
-      // Function to move the slider
-      const moveSlider = () => {
-        // 1. Calculate the position for the next slide
-        currentSlide = (currentSlide + 1) % totalSlides;
-
-        // Calculate the total distance to shift the slider container (0%, -33.333%, -66.666%)
-        const offset = currentSlide * slideWidthPercentage;
-
-        // 2. Apply the calculated translation
-        slider.style.transform = `translateX(-${offset}%)`;
-      };
-
-      // Set the initial position to Slide 1 (0%)
-      slider.style.transform = "translateX(0%)";
-
-      // Start the automatic sliding loop
-      setInterval(moveSlider, slideDuration);
-
-      // Optional: Add a smooth reset when transitioning from the last slide back to the first.
-      slider.addEventListener("transitionend", () => {
-        // Check if we are at the virtual end (index 0 after looping from last slide)
-        if (currentSlide === 0) {
-          // Temporarily remove transition for instant reset
-          slider.style.transition = "none";
-          slider.style.transform = "translateX(0%)";
-
-          // Re-apply transition after a small delay (using setTimeout)
-          setTimeout(() => {
-            slider.style.transition = "transform 1s ease-in-out";
-          }, 50);
-        }
-      });
+  /* ====================
+     Lazy apply slide backgrounds (avoid CLS)
+     ==================== */
+  const slides = document.querySelectorAll(".slide");
+  slides.forEach((s) => {
+    const bg = s.getAttribute("data-bg");
+    if (bg) {
+      // set background image on pseudo-element by writing inline style to a custom property
+      // We'll create an inline style on the slide for ::before to read via CSS (not directly readable),
+      // so we'll set style.backgroundImage on the element (the ::before uses the same URL via JS)
+      s.style.setProperty("--bg-url", `url("${bg}")`);
+      // Also set the pseudo-element directly:
+      s.style.backgroundImage = `url("${bg}")`; // for browsers that might show element background
+      // finally set the ::before by adding a style element (safe approach)
+      const beforeStyle = document.createElement("style");
+      beforeStyle.innerHTML = `.slide[data-bg="${bg}"]::before{background-image:url("${bg}")}`;
+      document.head.appendChild(beforeStyle);
     }
-    // Close menu when a link is clicked (for better mobile experience)
-    navMenu.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        // Check if the menu is open before trying to close it
-        if (navMenu.classList.contains("active")) {
-          navMenu.classList.remove("active");
-        }
-      });
+  });
+
+  /* ====================
+     HERO SLIDER - optimized
+     ==================== */
+  const slider = document.querySelector(".hero-slider");
+  const slideNodes = document.querySelectorAll(".slide");
+  if (slider && slideNodes.length) {
+    let current = 0;
+    const total = slideNodes.length;
+    const intervalMs = 3500;
+
+    // ensure transition exists (in case CSS loaded later)
+    slider.style.transition =
+      slider.style.transition || "transform 1s ease-in-out";
+    slider.style.willChange = "transform";
+
+    let timer = null;
+
+    const moveTo = (index) => {
+      current = (index + total) % total;
+      slider.style.transform = `translateX(-${current * 100}vw)`;
+      // accessibility: update aria-hidden attributes
+      slideNodes.forEach((s, i) =>
+        s.setAttribute("aria-hidden", i !== current)
+      );
+    };
+
+    const start = () => {
+      if (timer) return;
+      timer = setInterval(() => moveTo(current + 1), intervalMs);
+    };
+    const stop = () => {
+      if (!timer) return;
+      clearInterval(timer);
+      timer = null;
+    };
+
+    // pause when not visible
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else start();
+    });
+
+    // wait until fonts/images ready for a stable start
+    Promise.all([
+      document.fonts ? document.fonts.ready : Promise.resolve(),
+    ]).then(() => {
+      // small delay to let layout settle
+      setTimeout(() => {
+        moveTo(0);
+        start();
+      }, 150);
     });
   }
 
-  // NOTE: CSS handles smooth scrolling (scroll-behavior: smooth)
-  // The JavaScript fallback for smooth scrolling is not strictly needed
-  // unless you support very old browsers, but the CSS method is cleaner.
-
-  // 2. Simple Contact Form Submission Handler
+  /* ====================
+     Contact form handling
+     ==================== */
   const contactForm = document.getElementById("contact-form");
   const formMessage = document.getElementById("form-message");
-
   if (contactForm && formMessage) {
     contactForm.addEventListener("submit", (e) => {
-      e.preventDefault(); // Stop the default jump
-
-      // Simulate a successful submission
+      e.preventDefault();
       formMessage.textContent =
         "Thank you for your message! We will be in touch soon.";
       formMessage.style.display = "block";
-      contactForm.reset(); // Clear the form fields
-
-      // Hide the message after 5 seconds
-      setTimeout(() => {
-        formMessage.style.display = "none";
-      }, 5000);
+      contactForm.reset();
+      setTimeout(() => (formMessage.style.display = "none"), 5000);
     });
   }
 });
